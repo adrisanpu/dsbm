@@ -14,9 +14,17 @@
 
 int main(void)
  {
- // Basic initializations
- //baseInit();
+	/*
+ 	baseInit(); // Basic initialization
+ 	LCD_Init(); // Initializes the LCD
+ 	LCD_Config(1,1,1);
+ 	LCD_SendString("ADRIA SANCHEZ");
+ 	LCD_GotoXY(3,1);
+ 	LCD_SendString("SARA MARTINEZ");
 
+ 	while (1);
+	*/
+	
 	/*
 	baseInit(); // Basic initialization
 	LCD_Init(); // Initializes the LCD

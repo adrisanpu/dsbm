@@ -41,18 +41,18 @@ static void lcdGPIOInit(void)
 // Send 4 bits to the LCD and generates an enable pulse
 //     port : port name
 //     line : port line
-void GPIO_ModePushPull(GPIO_TypeDef *port, int32_t linia) {
+void GPIO_ModePushPull(GPIO_TypeDef *port, int32_t line) {
 	//outpt register mode bits set to 01
 	//even bits set to 1
-	port->MODER = (port->MODER) | (BIT(2*linia));
+	port->MODER = (port->MODER) | (BIT(2*line));
 	//odd bits set to 0
-	port->MODER = (port->MODER) & ~(BIT(2*linia+1)); 
+	port->MODER = (port->MODER) & ~(BIT(2*line+1)); 
 	//set register line bit to 0 for push-pull output
-	port->OTYPER = (port->OTYPER) & ~BIT(linia);
+	port->OTYPER = (port->OTYPER) & ~BIT(line);
 	//bits set to 0 for minimum speed (2MHz) to avoid dangerous behaviours
-	port->OSPEEDR = (port->OSPEEDR) & ~(BIT(linia*2)|BIT(linia*2+1));
+	port->OSPEEDR = (port->OSPEEDR) & ~(BIT(line*2)|BIT(line*2+1));
 	//set register bits to 01
-	port->PUPDR = (port->PUPDR) & ~(BIT(linia*2)| BIT(linia*2+1));
+	port->PUPDR = (port->PUPDR) & ~(BIT(line*2)| BIT(line*2+1));
 }
 
 // Send 4 bits to the LCD and generates an enable pulse
@@ -109,18 +109,18 @@ void LCD_ClearDisplay(void){
 void LCD_Config(int32_t Disp,int32_t Cursor,int32_t Blink){
 	//0 in binary => 0000
 	lcdNibble(0,0);
-	//make sure the arguments equals 0 (False) or 1 (True)
+	//make sure the arguments equal 0 (False) or 1 (True)
 	if(Disp) Disp = 1;
 	else if(Cursor) Cursor = 1;
 	else if(Blink) Blink = 1;
-	//send next 4 bits to 1 ans the arguments values
+	//send next 4 bits to 1 and the arguments values
 	lcdNibble((1<<3)|(Disp<<2)|(Cursor<<1)|(Blink<<0),0);
 	DELAY_US(40);
 }
 
 
 // Set the cursor at the given position
-//    col: Columnn (0..LCD_COLUMNS-1)
+//    col: Column (0..LCD_COLUMNS-1)
 //    row: Row     (0..LCD_ROWS-1)
 void LCD_GotoXY(int32_t col,int32_t row){
 	//sets the cursor in the first column of the first row, 8 en binari => 1000 
@@ -130,11 +130,10 @@ void LCD_GotoXY(int32_t col,int32_t row){
 	//indicates the column position
 	lcdNibble(col,0);
 	DELAY_US(40);
-
 }
 
 // Send a character to the LCD at the current position
-//     car: Charater to send
+//     car: Character to send
 void LCD_SendChar(char car){
 	//send 4 first bits on the left
 	lcdNibble(car>>4,1);
@@ -146,7 +145,7 @@ void LCD_SendChar(char car){
 // Send a string to the LCD at the current position
 //     string: String to send
 void LCD_SendString(char *string){
-	uint32_t i=0;
+	int32_t i=0;
 	//send all string characters until there is the escape sequence (end of string)
 	while(string[i] != '\0'){
 		LCD_SendChar(string[i]);

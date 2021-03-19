@@ -22,6 +22,7 @@
 # The character "\" at the end of all but the last line is important
 PCSRC = Base.c \
 		lcd.c \
+		accel.c \
         main.c
 
 # COMPILATION OPTIONS ####################################################

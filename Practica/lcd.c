@@ -123,6 +123,16 @@ void LCD_Config(int32_t Disp,int32_t Cursor,int32_t Blink){
 //    row: Row     (0..LCD_ROWS-1)
 void LCD_GotoXY(int32_t col,int32_t row)
 {
+	if (row == 0){ //si la variable row val 0 el fiquem a la primera fila, sino a la segona
+		lcdNibble(8,0); //8 en binari => 1000 (primera fila)
+	} else{
+	lcdNibble(12,0); //12 en binari => 1100 (segona fila)
+	}
+	lcdNibble(col,0); //Indiquem la posició de la columna
+	DELAY_US(40);
+
+
+	/*
 	if (row == 0){
 		lcdNibble(8,0);//8 en binari => 1000 (primera fila)
 		lcdNibble(0+col>>4,0);
@@ -139,6 +149,7 @@ void LCD_GotoXY(int32_t col,int32_t row)
 		lcdNibble(13,0);//8 en binari => 1000 (primera fila)
 		lcdNibble(4>>4,0);
 	}
+	*/
 
 	DELAY_US(40);
 }

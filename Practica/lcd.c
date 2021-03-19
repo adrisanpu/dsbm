@@ -22,7 +22,7 @@
 #define SHIFT_BITS	12
 
 // Initializes DB7..DB4, RS, E i BL in Push-Pull output mode
-// and sets the ouptuts to "0"
+// and sets the outputs to "0"
 
 static void lcdGPIOInit(void)
 {

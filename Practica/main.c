@@ -43,7 +43,7 @@ int main(void)
 		LCD_SendString(lectura);
 		SLEEP_MS(200);
 	}
-	*/
+
 
 	baseInit(); // Basic initialization
 	LCD_Init(); // Initializes the LCD
@@ -70,6 +70,46 @@ int main(void)
 		LCD_GotoXY(valy,1);
 		LCD_SendChar('*');
 		SLEEP_MS(200);
+	}
+	*/
+
+	baseInit(); // Basic initialization
+	LCD_Init(); // Initializes the LCD
+	LCD_Config(1,0,0);
+	initAccel();
+	int32_t inx = readAccel(0x29,1);
+	int32_t iny = readAccel(0x2b,1);
+	int32_t N = 5;
+	int32_t m[2][N];
+	int32_t j,mx,my;
+
+	while(1){
+		for (j=0;j<N-1;j++){
+			//Actualised values
+			m[0][j]= readAccel(0x29,1);
+			m[1][j]= readAccel(0x2b,1);
+			SLEEP_MS(200);
+		}
+		for (j=0;j<N-1;j++){
+			mx = mx + m[0][j];
+			my = my + m[1][j];
+		}
+		mx=mx/N;
+		my=my/N;
+
+		//Column for the character = 256 positions lecture value / 16 columns for each row
+		int32_t valx = round(((mx-inx)+33)/4.7);
+		int32_t valy = round(((my-iny)+33)/4.7);
+		//Write the character in the column previously obtained
+		if (valx>15) valx=15;
+		if (valx<0) valx=0;
+		if (valy>15) valy=15;
+		if (valy<0) valy=0;
+		LCD_ClearDisplay();
+		LCD_GotoXY(valx,0);
+		LCD_SendChar('*');
+		LCD_GotoXY(valy,1);
+		LCD_SendChar('*');
 	}
 
  // Return so that the compiler doesn't complain

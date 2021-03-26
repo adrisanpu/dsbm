@@ -31,6 +31,7 @@ void initAccel(void)
 	//Set register CR1
 	SPI1->CR1 = (SPI1->CR1) | (SPI_CR1_SSM) | (SPI_CR1_SSI) | (SPI_CR1_MSTR) | (SPI_CR1_SPE);
 
+
 	int32_t a = writeAccel(0x20,0x47);
  }
 
@@ -38,7 +39,7 @@ int32_t writeAccel (int32_t reg, int32_t data){
 	//Lecture value
 	int32_t val;
 	//Verify the value its not a reserved one
-	if((reg < 0x20) && (reg > 0x22)) return 1001;
+	if((reg < 0x20) && (reg > 0x22) | (reg == 0x30) | (reg < 0x32) && (reg > 0x34) | (reg < 0x32) && (reg > 0x34) | (reg < 0x36) && (reg > 0x38) | (reg == 0x3b)) return 1001; //otros lectura y escritura
 	//Enable CS
 	LIS_CS_PORT->BSRR.H.clear = LIS_CS_BIT;
 	//bit 6: 0 disables self-increment

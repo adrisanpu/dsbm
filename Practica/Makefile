@@ -23,6 +23,7 @@
 PCSRC = Base.c \
 		lcd.c \
 		accel.c \
+		int.c \
         main.c
 
 # COMPILATION OPTIONS ####################################################

@@ -234,13 +234,13 @@ void LCD_Init(void)
  lcdNibble(0x00,0);
  DELAY_US(50);
 
- // Send OK
+ /*/ Send OK
  lcdNibble(0x04,1);
  lcdNibble(0x0F,1);
  DELAY_US(50);
  lcdNibble(0x04,1);
  lcdNibble(0x0B,1);
- DELAY_US(50);
+ DELAY_US(50);*/
  }
 
 

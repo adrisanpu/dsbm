@@ -9,6 +9,7 @@
 #include "Base.h"     // Basic definitions
 #include "lcd.h"
 #include "accel.h"
+#include "int.h"
 
 
 
@@ -28,9 +29,9 @@ int main(void)
 	LCD_GotoXY(0,0);
 	LCD_SendString(lectura);
 	while (1);
-*/
 
-	/*
+
+
 	baseInit(); // Basic initialization
 	LCD_Init(); // Initializes the LCD
 	initAccel();
@@ -71,7 +72,7 @@ int main(void)
 		LCD_SendChar('*');
 		SLEEP_MS(200);
 	}
-	*/
+
 
 	baseInit(); // Basic initialization
 	LCD_Init(); // Initializes the LCD
@@ -111,6 +112,11 @@ int main(void)
 		LCD_GotoXY(valy,1);
 		LCD_SendChar('*');
 	}
+*/
+     baseInit(); // Basic initialization
+	LCD_Init(); // Initializes the LCD
+	initAccel();
+	interruptTest();
 
  // Return so that the compiler doesn't complain
  // It is not really needed as ledBlink never returns

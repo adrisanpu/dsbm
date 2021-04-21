@@ -32,19 +32,19 @@
 
 volatile int switchFlag;
 
-
+// initializes the registers for proper interruptions and executes the code for the experiment
+//     
 void interruptTest(void){
 	//Enable the clock of the SYSCFG peripheral of the APB2 bus
 	RCC->APB2ENR = (RCC->APB2ENR) | (RCC_APB2ENR_SYSCFGEN);
 	//Set port A to EXTI0 field of the EXTICR1(EXTICR[0]) register (0000)
 	SYSCFG->EXTICR[0] = (SYSCFG->EXTICR[0]) & (~SYSCFG_EXTICR1_EXTI0);
-	//Enable the EXTI0 interruption (set “1” = remove the mask)
+	//Enable the EXTI0 interruption (set â€œ1â€ = remove the mask)
 	EXTI->IMR = (EXTI->IMR) | EXTI_IMR_MR0;
 	//Enable the EXTI0 interruption (for rising flank)
 	EXTI->RTSR = (EXTI->RTSR) | EXTI_RTSR_TR0;
-	//Delete the EXTI0 interruption request(Pending Register = “1”)
+	//Delete the EXTI0 interruption request(Pending Register = â€œ1â€)
 	EXTI->PR = EXTI_PR_PR0;
-	//EXTI->FTSR = (EXTI->FTSR) & (~EXTI_FTSR_TR0);
 	//Enable the EXTI0 interruption with nvicEnableVector function (set the properly priority)
 	nvicEnableVector(EXTI0_IRQn,CORTEX_PRIORITY_MASK(STM32_EXT_EXTI0_IRQ_PRIORITY));
 
@@ -55,7 +55,7 @@ void interruptTest(void){
 		while(!switchFlag);
 		char dada[7];
 		LCD_ClearDisplay(); //Clear display
-		int32_t iny = readAccel(0x2b,1); //Read “y” of the accelerometer
+		int32_t iny = readAccel(0x2b,1); //Read â€œyâ€ of the accelerometer
 		LCD_GotoXY(0,0);
 		LCD_SendString("Y = "); //Show the value
 		LCD_GotoXY(3,0);
@@ -70,21 +70,16 @@ the main program. They are automatically called by the NVIC
 interrupt subsystem.
 *******************************************************************/
 
-// EXTI 0 ISR
-// Associated to the user button
-// Tasks to do:
-//    * Erase the pending interrupt flag
-//    * Change the green led status
-//    * Activate the flag so that the accelerometer Y axis is read
+//code to execute when an interruption is given (user button clicked)
 CH_IRQ_HANDLER(EXTI0_IRQHandler)
  {
 	//Reserve system registers
 	CH_IRQ_PROLOGUE();
-	//Delete the EXTI0 interruption request
+	//Erase the pending interrupt flag
 	EXTI->PR = EXTI_PR_PR0;
-	//XOR(^) with green LEDs previous value
+	//Change the green led status
 	LEDS_PORT->ODR=GREEN_LED_BIT ^ (LEDS_PORT->ODR);
-	//Activate switchFlag
+	//Activate the flag so that the accelerometer Y axis is read
 	switchFlag = 1;
 	//Recover system registers
 	CH_IRQ_EPILOGUE();

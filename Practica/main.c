@@ -10,6 +10,7 @@
 #include "lcd.h"
 #include "accel.h"
 #include "int.h"
+#include "keyboard.h"
 
 
 
@@ -113,10 +114,44 @@ int main(void)
 		LCD_SendChar('*');
 	}
 */
-     baseInit(); // Basic initialization
+	/*
+    baseInit(); // Basic initialization
 	LCD_Init(); // Initializes the LCD
-	initAccel();
-	interruptTest();
+	initKeyboard();
+	char code[16]={'1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'};
+	int32_t key = 0;
+	intConfigKeyboard();
+	*/
+
+	baseInit(); // Basic initialization
+	LCD_Init(); // Initializes the LCD
+	initKeyboard();
+	char code[16]={'1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'};
+	int32_t key = 0, i;
+	while(1){
+		key = readMultiKey();
+		LCD_ClearDisplay();
+		if((key & 0xffff)!= 0){
+			for(i = 0; i <= 15; i++){
+				if((key & BIT(i)) != 0){
+					LCD_GotoXY(i,0);
+					LCD_SendChar(code[i]);
+				}
+			}
+		}
+		//DELAY_US(10);
+	}
+	SLEEP_MS(100);
+
+	/*
+	while(1){
+		key = 32;
+		LCD_ClearDisplay();
+		key = readKeyboard();
+		if (key != 32) LCD_SendChar(code[key]);
+		SLEEP_MS(50);
+	}
+	*/
 
  // Return so that the compiler doesn't complain
  // It is not really needed as ledBlink never returns

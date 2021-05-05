@@ -4,6 +4,7 @@
 
 volatile int32_t key;
 
+// Initializes keyboard registers
 void initKeyboard(){
 	int32_t i;
 	for(i=0;i<=3;i++){
@@ -24,7 +25,9 @@ void initKeyboard(){
 	}
 }
 
-
+// Read the keyboard register
+// In case of any key clicked it's position in keyboard's code
+// In case of none key clicked returns 32
 int32_t readKeyboard(void){
 	int32_t i,j;
 	//Set all rows to 1
@@ -48,6 +51,7 @@ int32_t readKeyboard(void){
 	return 32;
 }
 
+// Read the keyboard register using the interruptions
 void intConfigKeyboard(){
 	int32_t i;
 	(KEY_PORT->BSRR.H.clear) = KEY_ROW1_BIT | KEY_ROW2_BIT | KEY_ROW3_BIT | KEY_ROW4_BIT;
@@ -91,6 +95,26 @@ void intConfigKeyboard(){
 	}
 }
 
+// code executed when an interruption is called in the previous function
+CH_IRQ_HANDLER(EXTI9_5_IRQHandler){
+	CH_IRQ_PROLOGUE();
+	if ((EXTI-> PR & (EXTI_PR_PR6 | EXTI_PR_PR7 | EXTI_PR_PR8 | EXTI_PR_PR9)) != 0) {
+		//Mask the interruptions (set to 0) before exploring the keyboard
+		EXTI->IMR = (EXTI->IMR) &~ (EXTI_IMR_MR6 | EXTI_IMR_MR7 | EXTI_IMR_MR8| EXTI_IMR_MR9);
+		//Explore the keyboard and save the key
+		key = readKeyboard();
+		//Erase the EXTI6 to EXTI9 interruption request
+		EXTI->PR = (EXTI_PR_PR6 | EXTI_PR_PR7 | EXTI_PR_PR8 | EXTI_PR_PR9);
+		(GPIOD->BSRR.H.clear) = KEY_ROW1_BIT | KEY_ROW2_BIT | KEY_ROW3_BIT | KEY_ROW4_BIT;
+		//Unmask the interruptions (set a 0) before exploring the keyboard
+		EXTI->IMR = (EXTI_IMR_MR6 | EXTI_IMR_MR7 | EXTI_IMR_MR8 | EXTI_IMR_MR9);
+	}
+	CH_IRQ_EPILOGUE();
+}
+
+// Read simultaniously activated keyboard registers
+// In case of any key clicked return a 16 bit value with bit in the keys code position set to 1
+// In case of none key clicked returns 32
 int32_t readMultiKey(void) {
 	//set all rows to 1
 	(GPIOD->BSRR.H.set) = KEY_ROW1_BIT | KEY_ROW2_BIT | KEY_ROW3_BIT | KEY_ROW4_BIT;
@@ -115,20 +139,4 @@ int32_t readMultiKey(void) {
 		//DELAY_US(10);
 	}
 	return valor;
-}
-
-CH_IRQ_HANDLER(EXTI9_5_IRQHandler){
-	CH_IRQ_PROLOGUE();
-	if ((EXTI-> PR & (EXTI_PR_PR6 | EXTI_PR_PR7 | EXTI_PR_PR8 | EXTI_PR_PR9)) != 0) {
-		//Mask the interruptions (set to 0) before exploring the keyboard
-		EXTI->IMR = (EXTI->IMR) &~ (EXTI_IMR_MR6 | EXTI_IMR_MR7 | EXTI_IMR_MR8| EXTI_IMR_MR9);
-		//Explore the keyboard and save the key
-		key = readKeyboard();
-		//Erase the EXTI6 to EXTI9 interruption request
-		EXTI->PR = (EXTI_PR_PR6 | EXTI_PR_PR7 | EXTI_PR_PR8 | EXTI_PR_PR9);
-		(GPIOD->BSRR.H.clear) = KEY_ROW1_BIT | KEY_ROW2_BIT | KEY_ROW3_BIT | KEY_ROW4_BIT;
-		//Unmask the interruptions (set a 0) before exploring the keyboard
-		EXTI->IMR = (EXTI_IMR_MR6 | EXTI_IMR_MR7 | EXTI_IMR_MR8 | EXTI_IMR_MR9);
-	}
-	CH_IRQ_EPILOGUE();
 }

@@ -136,7 +136,6 @@ int32_t readMultiKey(void) {
 		}
 		//set all row bits to 1
 		(GPIOD->BSRR.H.set) = BIT(i);
-		//DELAY_US(10);
 	}
 	return valor;
 }

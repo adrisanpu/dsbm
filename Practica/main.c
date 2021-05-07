@@ -12,7 +12,7 @@
 #include "int.h"
 #include "keyboard.h"
 
-
+volatile uint32_t i = 0;
 
 int main(void)
  {
@@ -113,15 +113,15 @@ int main(void)
 		LCD_GotoXY(valy,1);
 		LCD_SendChar('*');
 	}
-*/
-	/*
+
+
     baseInit(); // Basic initialization
 	LCD_Init(); // Initializes the LCD
 	initKeyboard();
 	char code[16]={'1','2','3','A','4','5','6','B','7','8','9','C','*','0','#','D'};
 	int32_t key = 0;
 	intConfigKeyboard();
-	*/
+
 
 	baseInit(); // Basic initialization
 	LCD_Init(); // Initializes the LCD
@@ -143,7 +143,7 @@ int main(void)
 	}
 	SLEEP_MS(100);
 
-	/*
+
 	while(1){
 		key = 32;
 		LCD_ClearDisplay();
@@ -152,6 +152,12 @@ int main(void)
 		SLEEP_MS(50);
 	}
 	*/
+
+	// test2threads();
+
+	// semaphoreExample();
+
+	mutexExample();
 
  // Return so that the compiler doesn't complain
  // It is not really needed as ledBlink never returns

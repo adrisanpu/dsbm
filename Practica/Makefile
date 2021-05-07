@@ -25,6 +25,8 @@ PCSRC = Base.c \
 		accel.c \
 		int.c \
 		keyboard.c \
+		process.c \
+		mutexes.c \
         main.c
 
 # COMPILATION OPTIONS ####################################################
